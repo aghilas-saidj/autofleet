@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  laravel_api:
+    image: bitnami/laravel:latest
+    container_name: laravel_api
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    ports:
+      - "8081:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - laravel_network
+
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=laravel
+      - MYSQL_PASSWORD=secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - laravel_network
+
+volumes:
+  db_data:
+
+networks:
+  laravel_network:
+    driver: bridge
